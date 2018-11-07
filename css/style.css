@@ -48,9 +48,9 @@ a:hover{color:#267A01;text-decoration:underline;}
 /*====================================
   分页信息（表格依赖样式）
   ===================================*/
-.pagination{font-size:14px;}
+.pagination{font-size:14px; float: right;}
 .pagination a {text-decoration: none;}
-.pagination .pxofy{float:left;margin-left: 5px;height:25px;*padding-top:1px;}	
+.pagination .pxofy{float:left;margin-left: 5px;height:25px;*padding-top:1px;}
 .pagination a, .pagination span {display: block;float: left;height:32px;line-height:32px;padding:0 10px;font-family:Arial, Helvetica, sans-serif !important;}
 .pagination .current {cursor:default;border: solid 1px ;}
 .pagination .prev, .pagination .next{/*line-height:22px;*/}
@@ -69,10 +69,14 @@ textarea{height:80px; background:none;}
 
 /*button样式*/
 .button{display:inline-block;width:50px; height:30px; margin-left: 3px; background:url(../img/skin_/formbtnbg.png);border:none; border-radius:3px;color:#fff; font-size:16px; cursor:pointer; font-family:'Microsoft Yahei','微软雅黑';}
+.backbutton{display:inline-block;width:50px; height:30px; margin-left: 3px; background:url(../img/skin_/dialogbtn.png);border:none; border-radius:3px;color:#3C3C3C; font-size:16px; cursor:pointer; font-family:'Microsoft Yahei','微软雅黑';}
 
 .button:active{background:url(../img/skin_/formbtnbg.png);border:none; }
+.backbutton:active{background:url(../img/skin_/dialogbtn.png);border:none; }
 .button.normal{width:133px; height:33px;background:url(../img/skin_/dialogbtn.png);color:#000;border:1px solid #c0c0c0;}
+.backbutton.normal{width:133px; height:33px;background:url(../img/skin_/formbtnbg.png);color:#000;border:1px solid #c0c0c0;}
 .button.long2{width:100px;}
+.backbutton.long2{width:100px;}
 
 /*====================================
   表单样式

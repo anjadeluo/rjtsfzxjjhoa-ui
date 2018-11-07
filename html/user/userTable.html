@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../css/style.css" />
+<link rel="stylesheet" type="text/css" href="../../css/WdatePicker.css" />
+<link rel="stylesheet" type="text/css" href="../../css/skin_/table.css" />
+<link rel="stylesheet" type="text/css" href="../../css/jquery.grid.css" />
+
+
+<title>用户</title>
+</head>
+
+<body>
+<div id="container">
+	<div id="hd"></div>
+    <div id="bd">
+    	<div id="main">
+        	<div class="search-box ue-clear">
+            	<div class="search-area">
+                    <div class="kv-item ue-clear">
+                        <label>选择类型:</label>
+                        <div class="kv-item-content">
+                            <select>
+                                <option>全部</option>
+                                <option>dict_sex</option>
+                                <option>dict_grade</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="search-button">
+                	<input class="button" type="button" value="搜索"/>
+                </div>
+            </div>
+             
+            <div class="table">
+            	<div class="opt ue-clear">
+                    <span class="pagination sortarea"></span>
+                	<span class="optarea">
+                        <a href="userForm.html" class="add">
+                            <i class="icon"></i>
+                            <span class="text">添加</span>
+                        </a>
+                        <a href="javascript:;" class="delete">
+                            <i class="icon"></i>
+                            <span class="text">删除</span>
+                        </a>
+                        
+                        <a href="javascript:;" class="statistics">
+                            <i class="icon"></i>
+                            <span class="text">统计</span>
+                        </a>
+                        
+                        <a href="javascript:;" class="config">
+                            <i class="icon"></i>
+                            <span class="text">配置</span>
+                        </a>
+                    </span>
+                </div>
+                
+                <div class="grid"></div>
+                
+                <div class="pagination"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../../js/jquery.js"></script>
+<script type="text/javascript" src="../../js/global.js"></script>
+<script type="text/javascript" src="../../js/jquery.select.js"></script>
+<script type="text/javascript" src="../../js/core.js"></script>
+<script type="text/javascript" src="../../js/jquery.pagination.js"></script>
+<script type="text/javascript" src="../../js/jquery.grid.js"></script>
+<script type="text/javascript" src="../../js/WdatePicker.js"></script>
+<script type="text/javascript">
+	$('select').select();
+	var header = [{label: 'ID', maxWidth: 50, sortable: 'default', name: 'id'},
+                {label:'用户名', width: 100, sortable: 'default', name:'name'},
+                {label:'昵称', width: 120},
+                {label: '电话', width: 150},
+                {label: '邮箱', width: 180},
+                {label: '是否可用', width: 60},
+                {label: '创建时间', width: 120},
+                {label: '最后登录时间', width: 120}
+                ];
+
+    $('.grid').Grid({thead: header, tbody: null,
+        checkbox: {single:true},
+        operator: {type : "normal", width : 170},
+        sortCallBack : function(name,index,type){
+
+        }
+    });
+    getUserList(header, "", 1, 10);
+
+	$('.pagination').pagination(30,{
+		callback: function(page){
+            getUserList(header, "", page + 1, 10);
+		},
+		display_msg: false
+	});
+	
+	$('.search-box input[type=radio]').click(function(e) {
+        if($(this).prop('checked')){
+			if($(this).attr('data-define') === 'define'){
+				$('.define-input').show();
+			}else{
+				$('.define-input').hide();
+			}
+		}
+    });
+
+    /**
+     * 设置列表数据
+     * @param header
+     * @param seachText
+     * @param currentPage
+     * @param pageSize
+     */
+	function getUserList(header, seachText, currentPage, pageSize) {
+        $('.grid').Grid('addLoading');
+        $.ajax({
+            url:"userData" + currentPage + ".json",
+            data: {seachText: seachText, currentPage: currentPage, pageSize: pageSize},
+            type: "post",
+            success: function(result) {
+                if (result && result.success) {
+                    var users = result.userList;
+                    var tbody = [];
+
+                    for(var i=0;i < users.length;i++) {
+                        tbody[i] = [users[i].id, users[i].username, users[i].nickname];
+                        tbody[i][3] = users[i].telephone;
+                        tbody[i][4] = users[i].email;
+                        tbody[i][5] = users[i].enabled;
+                        tbody[i][6] = users[i].createDate;
+                        tbody[i][7] = users[i].lastLoginAt;
+                        tbody[i][8] = [{label:'编辑', username: users[i].username, onclick:function(){
+                            location.href = "userForm.html?username=" + this.username;
+                        }},{label:'删除', username: users[i].username, onclick: function(){
+                            deleteUser(this.username);
+                        }}];
+                    }
+                    $('.grid').Grid('setData',tbody, header);
+                }
+            }
+        })
+    }
+
+    /**
+     * 删除用户信息
+     * @param username
+     */
+    function deleteUser(username) {
+        $.ajax({
+            url: "/user/delete",
+            data: {username: username},
+            type: "post",
+            success: function(result) {
+                if (result && result.success) {
+                    alert("删除成功");
+                    location.reload(true);
+                } else {
+                    alert("删除失败");
+                }
+            }, error: function(error) {
+                alert("请求失败");
+            }
+        })
+    }
+</script>
+</html>
